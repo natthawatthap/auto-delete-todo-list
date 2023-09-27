@@ -1,0 +1,166 @@
+import React, { useState } from "react";
+import "./App.css";
+import basket from "./constant/basket";
+import InputText from "./components/Input";
+import List from "./components/List";
+import BasketButtonList from "./components/BasketButtonList";
+
+function App() {
+  const [inputText, setInputText] = useState("");
+  const [fruitList, setFruitList] = useState([]);
+  const [vegetableList, setVegetableList] = useState([]);
+  const [basketList, setBasketList] = useState(basket);
+
+  const handleBasketListButtonClick = (item) => {
+    setInputText(item.name);
+  };
+
+  const handleInputChange = (e) => {
+    setInputText(e.target.value);
+  };
+
+  const handleEnter = () => {
+    if (inputText.trim() !== "") {
+      // Check if the entered name is in the basket list
+      const isNameInBasketList = basketList.some(
+        (item) => item.name === inputText
+      );
+
+      if (isNameInBasketList) {
+        // If the name is in the basket list, remove it from the basket list
+        const updatedBasketList = basketList.filter(
+          (item) => item.name !== inputText
+        );
+        setBasketList(updatedBasketList);
+
+        // Find the item in the basket list
+        const newItem = basketList.find((item) => item.name === inputText);
+
+        // Depending on the type of the item, add it to the corresponding list
+        if (newItem.type === "Fruit") {
+          setFruitList([...fruitList, newItem]);
+        } else {
+          setVegetableList([...vegetableList, newItem]);
+        }
+      } else {
+        // Check if the entered name is in the fruit list
+        const isNameInFruitList = fruitList.some(
+          (item) => item.name === inputText
+        );
+
+        // If the name is not in the basket list
+        if (isNameInFruitList) {
+          // Find the item in the fruit list
+          const newItem = fruitList.find((item) => item.name === inputText);
+
+          // Remove the item from the fruit list
+          const updatedFruitList = fruitList.filter(
+            (item) => item.name !== inputText
+          );
+          setFruitList(updatedFruitList);
+
+          // Add the item to the basket list
+          setBasketList([...basketList, newItem]);
+        } else {
+          // Find the item in the vegetable list
+          const newItem = vegetableList.find((item) => item.name === inputText);
+
+          // Remove the item from the vegetable list
+          const updatedVegetableList = vegetableList.filter(
+            (item) => item.name !== inputText
+          );
+          setVegetableList(updatedVegetableList);
+
+          // Add the item to the basket list
+          setBasketList([...basketList, newItem]);
+        }
+
+        
+      }
+    }
+  };
+
+  return (
+    <div className="App">
+      <div>
+        <BasketButtonList
+          basketList={basketList}
+          handleBasketButtonListClick={handleBasketListButtonClick}
+        />
+      </div>
+
+      <div>
+        <h1>Select product</h1>
+        <InputText
+          inputText={inputText}
+          handleInputChange={handleInputChange}
+          handleEnter={handleEnter}
+        />
+        <div>
+          <List
+            listName={"Fruit"}
+            list={fruitList}
+            handleBasketListButtonClick={handleBasketListButtonClick}
+          />
+
+          <List
+            listName={"Vegetable"}
+            list={vegetableList}
+            handleBasketListButtonClick={handleBasketListButtonClick}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+.list {
+  flex: 0 0 calc(50% - 10px); /* Set the width of each column to 50% with spacing in between */
+  margin-bottom: 20px; /* Add margin to create spacing between columns */
+  padding: 10px; /* Add padding for spacing within each column */
+  box-sizing: border-box; /* Include padding and border in width calculation */
+}
+
+
+
+.list {
+  display: flex;
+  margin-top: 10px;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center items horizontally */
+  text-align: center; /* Center text inside buttons */
+  border: 1px solid #ccc; /* Add a border with a gray color */
+  padding: 10px; /* Add some padding to the container */
+  
+}
+
+.list ul {
+  list-style: none; /* Remove bullet points from the list */
+  padding: 0; /* Remove default padding */
+}
+
+.list li {
+  margin: 5px 0; /* Add some vertical spacing between buttons */
+}
+
+.list p {
+  background-color: tomato; /* Your desired background color */
+  padding: 5px 10px; /* Add some padding to space out the text */
+  width: 100%; /* Make the background full-width */
+  text-align: center; /* Center the text horizontally */
+
+}
+
+.list button {
+  display: block; /* Make buttons a block-level element */
+  margin-bottom: 10px; /* Add margin to create spacing between buttons */
+  width: 100px; /* Set a fixed width for the buttons */
+  height: 50px; /* Set a fixed height for the buttons */
+  text-align: center; /* Center text horizontally within the button */
+  cursor: pointer; /* Add pointer cursor on hover */
+ 
+}
